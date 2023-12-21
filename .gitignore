@@ -1,0 +1,24 @@
+# Node modules
+node_modules/
+
+# NestJS generated files
+/dist/
+/dist-test/
+/tmp/
+*.tsbuildinfo
+
+# Environment variables
+.env
+
+# Visual Studio Code directory
+.vscode/
+
+# Dependency directories
+/libs/
+/apps/*/node_modules/
+
+# NestJS logs
+logs/
+
+# NestJS cache
+/nest-*.json
