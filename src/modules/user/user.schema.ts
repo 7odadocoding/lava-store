@@ -1,4 +1,4 @@
-import { ISso } from 'src/user/user.interface';
+import { ISso } from './dto/user.dto';
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 

@@ -1,14 +1,15 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { IUser } from 'src/user/user.interface';
+import { IUser } from '../user/dto/user.dto';
+
 @Injectable()
 export class MailService {
    constructor(private mailerService: MailerService) {}
 
-   async sendUserConfirmation(user: IUser, sso: string) {
-      await this.mailerService.sendMail({
+   async sendUserConfirmation(user: IUser, sso: string): Promise<any> {
+      return await this.mailerService.sendMail({
          to: user.email,
-         subject: 'Welcome to NestStore',
+         subject: 'NestStore AuthSystem',
          template: './sso.ejs',
          context: {
             sso,

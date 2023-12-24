@@ -1,12 +1,29 @@
 import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
-import { IUser } from './user.interface';
-import { Post, Body, HttpCode } from '@nestjs/common/decorators';
+import { IUser } from './dto/user.dto';
+import {
+   Post,
+   Get,
+   Body,
+   HttpCode,
+   UseGuards,
+} from '@nestjs/common/decorators';
 import { UserDocument } from './user.schema';
-@Controller('user')
+import { AuthGuard } from 'src/common/guards/auth.guard';
+
+@Controller({ version: '1', path: 'users' })
 export class UserController {
    constructor(private userService: UserService) {}
-   @Post()
+
+   // example of some protected resource
+   @Get()
+   @HttpCode(200)
+   @UseGuards(AuthGuard)
+   getUsers(): string {
+      return 'hello from users';
+   }
+
+   @Post('signup')
    @HttpCode(201)
    async create(@Body() user: IUser): Promise<Partial<UserDocument>> {
       const userData: UserDocument = (await this.userService.createUser(

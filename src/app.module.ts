@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from './user/user.module';
-import { ProductModule } from './product/product.module';
-import { CartModule } from './cart/cart.module';
-import { OrderModule } from './order/order.module';
+import { UserModule } from './modules/user/user.module';
+import { ProductModule } from './modules/product/product.module';
+import { CartModule } from './modules/cart/cart.module';
+import { OrderModule } from './modules/order/order.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { MailModule } from './mail/mail.module';
-import { CategoryModule } from './category/category.module';
+import { MailModule } from './modules/mail/mail.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
    imports: [

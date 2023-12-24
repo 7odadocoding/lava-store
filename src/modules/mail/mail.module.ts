@@ -23,7 +23,7 @@ import { ConfigService } from '@nestjs/config';
             },
             template: {
                dir: join(__dirname, 'templates'),
-               adapter: new EjsAdapter(),
+               adapter: new EjsAdapter({ inlineCssEnabled: true }),
                options: {
                   strict: true,
                },
