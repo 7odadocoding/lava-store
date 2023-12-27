@@ -1,4 +1,4 @@
-# sso-store-nestjs
+# lava-store
 
 ## Installation
 
