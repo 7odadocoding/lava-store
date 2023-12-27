@@ -1,4 +1,4 @@
-import { ISso } from './dto/user.dto';
+import { OtpDTO } from './dto/user.dto';
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
@@ -22,7 +22,7 @@ export class User {
          expDate: Date,
       },
    })
-   sso: ISso;
+   otp: OtpDTO;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

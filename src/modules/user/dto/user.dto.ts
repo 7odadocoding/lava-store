@@ -1,12 +1,12 @@
-export interface ISso {
+export interface OtpDTO {
    value: string;
    expired: boolean;
    expDate: Date;
 }
 
-export interface IUser {
+export interface UserDTO {
    firstname: string;
    lastname: string;
    email: string;
-   sso: ISso;
+   otp: OtpDTO;
 }

@@ -1,10 +1,10 @@
 import { Injectable, UseInterceptors } from '@nestjs/common';
-import { ISso, IUser } from './dto/user.dto';
+import { OtpDTO, UserDTO } from './dto/user.dto';
 import { User, UserDocument } from './user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
-import { generateSso } from './user.utils';
+import { generateOtp } from './user.utils';
 import { MailService } from '../mail/mail.service';
 
 @UseInterceptors(new LoggingInterceptor())
@@ -14,31 +14,23 @@ export class UserService {
       @InjectModel(User.name) private userModel: Model<User>,
       private mailService: MailService,
    ) {}
-   async createUser(user: IUser): Promise<UserDocument | Error> {
+   async createUser(user: UserDTO): Promise<UserDocument | Error> {
       try {
          const newUser = new this.userModel(user);
+         const otp = generateOtp();
 
-         const ssoString = generateSso();
-         const mail = await this.mailService.sendUserConfirmation(
-            user,
-            ssoString,
-         );
-         console.info(mail);
-
-         // set user sso to new constructed sso
-         newUser.sso = this.ssoConsruct(ssoString);
-
-         // save the user and  return user data
+         await this.mailService.sendUserConfirmation(user, otp);
+         newUser.otp = this.otpConstruct(otp);
          return await newUser.save();
       } catch (error) {
          throw error;
       }
    }
 
-   private ssoConsruct(ssoString: string): ISso {
+   private otpConstruct(otp: string): OtpDTO {
       const expDate: Date = new Date(Date.now());
       return {
-         value: ssoString,
+         value: otp,
          expDate,
          expired: false,
       };
