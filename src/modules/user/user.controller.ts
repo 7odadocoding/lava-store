@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
-import { IUser } from './dto/user.dto';
+import { UserDTO } from './dto/user.dto';
 import {
    Post,
    Get,
@@ -25,7 +25,7 @@ export class UserController {
 
    @Post('signup')
    @HttpCode(201)
-   async create(@Body() user: IUser): Promise<Partial<UserDocument>> {
+   async create(@Body() user: UserDTO): Promise<Partial<UserDocument>> {
       const userData: UserDocument = (await this.userService.createUser(
          user,
       )) as UserDocument;
