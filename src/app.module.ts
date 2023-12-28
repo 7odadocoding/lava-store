@@ -7,6 +7,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './modules/mail/mail.module';
 import { CategoryModule } from './modules/category/category.module';
+import { MongoConfigService } from './configs/database/mongo.config';
+import { RedisModule } from './modules/redis/redis.module';
 
 @Module({
    imports: [
@@ -15,9 +17,12 @@ import { CategoryModule } from './modules/category/category.module';
       CartModule,
       OrderModule,
       ConfigModule.forRoot({ isGlobal: true }),
-      MongooseModule.forRoot(process.env.MONGO_URI),
+      MongooseModule.forRootAsync({
+         useClass: MongoConfigService,
+      }),
       MailModule,
       CategoryModule,
+      RedisModule,
    ],
 })
 export class AppModule {}
