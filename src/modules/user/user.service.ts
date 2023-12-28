@@ -1,27 +1,26 @@
 import { Injectable, UseInterceptors } from '@nestjs/common';
-import { OtpDTO, UserDTO } from './dto/user.dto';
-import { User, UserDocument } from './user.schema';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import { UserDTO } from './user.dto';
+import { OtpDTO } from './otp.dto';
 import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
 import { generateOtp } from './user.utils';
 import { MailService } from '../mail/mail.service';
+import { UserRepository } from './user.repository';
 
 @UseInterceptors(new LoggingInterceptor())
 @Injectable()
 export class UserService {
    constructor(
-      @InjectModel(User.name) private userModel: Model<User>,
+      private userRepository: UserRepository,
       private mailService: MailService,
    ) {}
-   async createUser(user: UserDTO): Promise<UserDocument | Error> {
+   async createUser(user: UserDTO): Promise<UserDTO | Error> {
       try {
-         const newUser = new this.userModel(user);
+         const userDto = await this.userRepository.create(user);
          const otp = generateOtp();
-
          await this.mailService.sendUserConfirmation(user, otp);
-         newUser.otp = this.otpConstruct(otp);
-         return await newUser.save();
+         userDto.otp = this.otpConstruct(otp);
+         await this.userRepository.update(userDto);
+         return userDto;
       } catch (error) {
          throw error;
       }

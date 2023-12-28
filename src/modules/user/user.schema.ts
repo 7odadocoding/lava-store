@@ -1,4 +1,4 @@
-import { OtpDTO } from './dto/user.dto';
+import { OtpDTO } from './otp.dto';
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 

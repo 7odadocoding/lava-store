@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDTO } from './dto/user.dto';
+import { UserDTO } from './user.dto';
 import {
    Post,
    Get,
@@ -8,7 +8,6 @@ import {
    HttpCode,
    UseGuards,
 } from '@nestjs/common/decorators';
-import { UserDocument } from './user.schema';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 
 @Controller({ version: '1', path: 'users' })
@@ -25,15 +24,12 @@ export class UserController {
 
    @Post('signup')
    @HttpCode(201)
-   async create(@Body() user: UserDTO): Promise<Partial<UserDocument>> {
-      const userData: UserDocument = (await this.userService.createUser(
+   async create(@Body() user: UserDTO): Promise<Partial<UserDTO>> {
+      const { otp, ...userData } = (await this.userService.createUser(
          user,
-      )) as UserDocument;
-      return {
-         firstname: userData.firstname,
-         lastname: userData.lastname,
-         email: userData.email,
-         _id: userData._id,
-      };
+      )) as UserDTO;
+
+      console.log(otp);
+      return userData;
    }
 }
