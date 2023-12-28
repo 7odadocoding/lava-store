@@ -10,10 +10,10 @@ async function bootstrap() {
    app.enableVersioning({
       type: VersioningType.URI,
    });
-   app.enableCors({ origin: 'http://127.0.0.1:3000' });
+   app.enableCors({ origin: '*' });
+   const port = +process.env.PORT || 3000;
+   await app.listen(port);
 
-   await app.listen(3000);
-
-   console.log('server is running on http://127.0.0.1:3000');
+   console.log(`server is running on ${await app.getUrl()}`);
 }
 bootstrap();

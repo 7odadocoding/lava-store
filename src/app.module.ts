@@ -9,20 +9,27 @@ import { MailModule } from './modules/mail/mail.module';
 import { CategoryModule } from './modules/category/category.module';
 import { MongoConfigService } from './configs/database/mongo.config';
 import { RedisModule } from './modules/redis/redis.module';
-
+import { AuthModule } from './modules/user/auth/auth.module';
+import { JwtModule } from '@nestjs/jwt/dist';
 @Module({
    imports: [
-      UserModule,
-      ProductModule,
-      CartModule,
-      OrderModule,
       ConfigModule.forRoot({ isGlobal: true }),
       MongooseModule.forRootAsync({
          useClass: MongoConfigService,
       }),
+      JwtModule.register({
+         global: true,
+         secret: process.env.JWT_SECRET,
+         signOptions: { expiresIn: '1d' },
+      }),
+      UserModule,
+      ProductModule,
+      CartModule,
+      OrderModule,
       MailModule,
       CategoryModule,
       RedisModule,
+      AuthModule,
    ],
 })
 export class AppModule {}
