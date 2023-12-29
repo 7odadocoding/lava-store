@@ -22,3 +22,7 @@ logs/
 
 # NestJS cache
 /nest-*.json
+
+
+# Dev_Notes
+.notes
