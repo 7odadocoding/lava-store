@@ -13,7 +13,6 @@ import { UserDTO } from '../user.dto';
 import { AuthService } from './auth.service';
 import { Request } from 'express';
 import { generateOtp } from '../user.utils';
-import { MailService } from 'src/modules/mail/mail.service';
 import { QueryDTO } from './query.dto';
 import { JwtService } from '@nestjs/jwt';
 
@@ -21,50 +20,32 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthController {
    constructor(
       private authService: AuthService,
-      private mailService: MailService,
       private jwtService: JwtService,
    ) {}
 
    @Post('signup')
    @HttpCode(201)
    async signup(
-      @Body() user: UserDTO,
+      @Body() user: Partial<UserDTO>,
       @Req() req: Request,
    ): Promise<Partial<UserDTO>> {
-      const userDto = await this.authService.signup(user);
-      const otpString = generateOtp();
-      const { otp, ...userData } = await this.authService.updateOtp(
-         userDto._id,
-         otpString,
-      );
-      const baseUrl = `${req.protocol}://${req.hostname}:${process.env.PORT}`;
-      console.log(otp.value);
-
-      const otpUrl = `${baseUrl}/v1/auth/verify-otp?user=${userData._id}&otp=${otp.value}`;
-      await this.mailService.sendUserConfirmation(user, otpUrl);
-
-      return userData;
+      user.otp = this.authService.newOtp(generateOtp());
+      const userDto = await this.authService.signup(user as UserDTO);
+      await this.authService.sendOtpEmail(req, userDto);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { otp, ...secureUser } = userDto;
+      return secureUser;
    }
 
    @Post('login')
    @HttpCode(200)
    async login(@Body() body: { email: string }, @Req() req: Request) {
-      const userDto = await this.authService.login(body.email);
+      const userDto = await this.authService.login(body.email, req);
       if (!userDto)
          throw new HttpException(
             'user with this email not found',
             HttpStatus.NOT_FOUND,
          );
-      const otpString = generateOtp();
-      const { otp, ...userData } = await this.authService.updateOtp(
-         userDto._id,
-         otpString,
-      );
-      const baseUrl = `${req.protocol}://${req.hostname}:${process.env.PORT}`;
-      console.log(otp.value);
-
-      const otpUrl = `${baseUrl}/v1/auth/verify-otp?user=${userData._id}&otp=${otp.value}`;
-      await this.mailService.sendUserConfirmation(userDto, otpUrl);
 
       return { error: null, message: 'Login link sent to your email' };
    }

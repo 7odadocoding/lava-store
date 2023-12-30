@@ -64,4 +64,14 @@ export class UserRepository {
          user.otp,
       );
    }
+
+   async deleteOne(userId: string): Promise<boolean> {
+      try {
+         const user = await this.userModel.findByIdAndDelete(userId);
+         if (!user) return false;
+         return true;
+      } catch (error) {
+         false;
+      }
+   }
 }
