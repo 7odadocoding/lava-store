@@ -1,6 +1,11 @@
-import { registerAs } from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { RedisOptions } from 'ioredis';
 
-export default registerAs('redis', () => ({
-   host: process.env.REDIS_HOST || 'localhost',
-   port: parseInt(process.env.REDIS_PORT, 10) || 6379,
-}));
+@Injectable()
+export default class RedisConfig implements RedisOptions {
+   host?: string = this.configService.get('REDIS_HOST');
+   port?: number = this.configService.get('REDIS_PORT');
+   password?: string = this.configService.get('REDIS_PASS') || null;
+   constructor(private configService: ConfigService) {}
+}
