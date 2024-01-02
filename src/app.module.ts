@@ -12,6 +12,7 @@ import { RedisModule } from './modules/redis/redis.module';
 import { AuthModule } from './modules/user/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt/dist';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { AppController } from './app.controller';
 @Module({
    imports: [
       ConfigModule.forRoot({ isGlobal: true }),
@@ -33,5 +34,6 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
       AuthModule,
       CloudinaryModule,
    ],
+   controllers: [AppController],
 })
 export class AppModule {}
