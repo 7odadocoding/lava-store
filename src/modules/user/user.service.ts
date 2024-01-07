@@ -1,25 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { UserDTO } from './user.dto';
-import { OtpDTO, createOtpDto } from './otp.dto';
+import { Otp } from './interfaces/otp.interface';
+import { IUser } from './interfaces/user.interface';
 
 @Injectable()
 export class UserService {
    constructor(private userRepository: UserRepository) {}
 
-   async create(user: UserDTO): Promise<UserDTO> {
+   async create(user: IUser): Promise<IUser> {
       return await this.userRepository.create(user);
    }
 
-   async getById(userId: string): Promise<UserDTO> {
+   async getById(userId: string): Promise<IUser> {
       return await this.userRepository.findById(userId);
    }
 
-   async getByEmail(email: string): Promise<UserDTO> {
+   async getByEmail(email: string): Promise<IUser> {
       return await this.userRepository.findByEmail(email);
    }
 
-   async update(newUserData: Partial<UserDTO>): Promise<Partial<UserDTO>> {
+   async update(newUserData: Partial<IUser>): Promise<Partial<IUser>> {
       return await this.userRepository.update(newUserData);
    }
 
@@ -29,17 +29,17 @@ export class UserService {
       return await this.userRepository.deleteOne(userId);
    }
 
-   async expireUserOtp(userId: string): Promise<OtpDTO> {
+   async expireUserOtp(userId: string): Promise<Otp> {
       const { otp } = await this.userRepository.findById(userId);
       otp.expired = true;
-      await this.userRepository.update({ otp });
-      return createOtpDto(otp.value, otp.expired, otp.expDate);
+      const user = await this.userRepository.update({ otp });
+      return user.otp;
    }
 
-   async changeUserOtp(userId: string, newOtp: string): Promise<OtpDTO> {
+   async changeUserOtp(userId: string, newOtp: string): Promise<Otp> {
       const otp = this.otpConstruct(newOtp);
-      await this.userRepository.update({ _id: userId, otp });
-      return createOtpDto(otp.value, otp.expired, otp.expDate);
+      const user = await this.userRepository.update({ _id: userId, otp });
+      return user.otp;
    }
 
    async checkOtp(userId: string, enteredOtp: string): Promise<boolean> {
@@ -55,9 +55,9 @@ export class UserService {
       }
    }
 
-   otpConstruct(otp: string): OtpDTO {
+   otpConstruct(otp: string): Otp {
       const tenMinutes = 5000 * 60;
       const expDate: Date = new Date(Date.now() + tenMinutes);
-      return createOtpDto(otp, false, expDate);
+      return { value: otp, expired: false, expDate };
    }
 }

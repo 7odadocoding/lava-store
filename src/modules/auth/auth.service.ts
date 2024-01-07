@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { UserDTO } from '../user.dto';
-import { UserService } from '../user.service';
-import { OtpDTO } from '../otp.dto';
+import { UserService } from '../user/user.service';
+import { Otp } from '../user/interfaces/otp.interface';
 import { Request } from 'express';
-import { MailService } from 'src/modules/mail/mail.service';
-import { generateOtp } from '../user.utils';
+import { MailService } from 'src/services/mail/mail.service';
+import { generateOtp } from '../user/user.utils';
+import { IUser } from '../user/interfaces/user.interface';
 
 @Injectable()
 export class AuthService {
@@ -12,11 +12,11 @@ export class AuthService {
       private userService: UserService,
       private mailService: MailService,
    ) {}
-   async signup(user: UserDTO): Promise<UserDTO> {
+   async signup(user: IUser): Promise<IUser> {
       return await this.userService.create(user);
    }
 
-   async login(email: string, req: Request): Promise<UserDTO> {
+   async login(email: string, req: Request): Promise<IUser> {
       const user = await this.userService.getByEmail(email);
       if (!user) return;
       const otp = await this.updateOtp(user._id, generateOtp());
@@ -29,18 +29,18 @@ export class AuthService {
       return await this.userService.checkOtp(userId, otp);
    }
 
-   async sendOtpEmail(req: Request, user: UserDTO): Promise<void> {
+   async sendOtpEmail(req: Request, user: IUser): Promise<void> {
       const baseUrl = `${req.protocol}://${req.hostname}:${process.env.PORT}`;
       const otpUrl = `${baseUrl}/v1/auth/verify-otp?user=${user._id}&otp=${user.otp.value}`;
       await this.mailService.sendUserConfirmation(user, otpUrl);
       return;
    }
 
-   newOtp(otp: string): OtpDTO {
+   newOtp(otp: string): Otp {
       return this.userService.otpConstruct(otp);
    }
 
-   async updateOtp(userId: string, otp: string): Promise<OtpDTO> {
+   async updateOtp(userId: string, otp: string): Promise<Otp> {
       return await this.userService.changeUserOtp(userId, otp);
    }
 

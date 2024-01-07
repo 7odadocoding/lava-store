@@ -1,4 +1,4 @@
-import { OtpDTO } from './otp.dto';
+import { Otp } from './interfaces/otp.interface';
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
@@ -22,7 +22,7 @@ export class User {
          expDate: Date,
       },
    })
-   otp: OtpDTO;
+   otp: Otp;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

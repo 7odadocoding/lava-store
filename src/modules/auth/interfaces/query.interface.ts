@@ -1,4 +1,4 @@
-export interface QueryDTO {
+export interface IQuery {
    user: string;
    otp: string;
 }

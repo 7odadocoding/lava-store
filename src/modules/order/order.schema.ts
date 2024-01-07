@@ -1,6 +1,6 @@
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { OrderItemDTO } from './order.dto';
+import { CartItem } from 'src/common/interfaces/cartItem.interface';
 
 export type OrderDocument = HydratedDocument<Order>;
 
@@ -14,7 +14,7 @@ export class Order {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
    })
-   products: OrderItemDTO[];
+   products: CartItem[];
 
    @Prop({ required: true, default: new Date() })
    order_date: Date;

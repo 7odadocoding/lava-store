@@ -5,14 +5,15 @@ import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/order/order.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { MailModule } from './modules/mail/mail.module';
+import { MailModule } from './services/mail/mail.module';
 import { CategoryModule } from './modules/category/category.module';
 import { MongoConfigService } from './configs/database/mongo.config';
-import { RedisModule } from './modules/redis/redis.module';
-import { AuthModule } from './modules/user/auth/auth.module';
+import { RedisModule } from './services/redis/redis.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt/dist';
-import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { CloudinaryModule } from './services/cloudinary/cloudinary.module';
 import { AppController } from './app.controller';
+
 @Module({
    imports: [
       ConfigModule.forRoot({ isGlobal: true }),

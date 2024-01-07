@@ -9,12 +9,13 @@ import {
    HttpException,
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
-import { UserDTO } from '../user.dto';
 import { AuthService } from './auth.service';
 import { Request } from 'express';
-import { generateOtp } from '../user.utils';
-import { QueryDTO } from './query.dto';
+import { generateOtp } from '../user/user.utils';
+import { IQuery } from './interfaces/query.interface';
 import { JwtService } from '@nestjs/jwt';
+import { IUser } from '../user/interfaces/user.interface';
+import { CreateUserDto } from '../user/dto/user.dto';
 
 @Controller({ version: '1', path: 'auth' })
 export class AuthController {
@@ -26,22 +27,22 @@ export class AuthController {
    @Post('signup')
    @HttpCode(201)
    async signup(
-      @Body() user: Partial<UserDTO>,
+      @Body() userDto: CreateUserDto,
       @Req() req: Request,
-   ): Promise<Partial<UserDTO>> {
-      user.otp = this.authService.newOtp(generateOtp());
-      const userDto = await this.authService.signup(user as UserDTO);
-      await this.authService.sendOtpEmail(req, userDto);
+   ): Promise<Partial<IUser>> {
+      userDto.otp = this.authService.newOtp(generateOtp());
+      const user = await this.authService.signup(userDto);
+      await this.authService.sendOtpEmail(req, user);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { otp, ...secureUser } = userDto;
+      const { otp, ...secureUser } = user;
       return secureUser;
    }
 
    @Post('login')
    @HttpCode(200)
    async login(@Body() body: { email: string }, @Req() req: Request) {
-      const userDto = await this.authService.login(body.email, req);
-      if (!userDto)
+      const user = await this.authService.login(body.email, req);
+      if (!user)
          throw new HttpException(
             'user with this email not found',
             HttpStatus.NOT_FOUND,
@@ -52,7 +53,7 @@ export class AuthController {
 
    @Get('verify-otp')
    @HttpCode(200)
-   async verifyOtp(@Query() query: QueryDTO) {
+   async verifyOtp(@Query() query: IQuery) {
       const { user, otp } = query;
       const isValidOtp = await this.authService.verifyOtp(user, otp);
       if (!isValidOtp)
