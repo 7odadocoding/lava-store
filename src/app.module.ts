@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { Module } from '@nestjs/common';
 import { UserModule } from './modules/user/user.module';
 import { ProductModule } from './modules/product/product.module';
@@ -13,9 +14,21 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt/dist';
 import { CloudinaryModule } from './services/cloudinary/cloudinary.module';
 import { AppController } from './app.controller';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 
 @Module({
    imports: [
+      I18nModule.forRoot({
+         fallbackLanguage: 'en',
+         loaderOptions: {
+            path: path.join(__dirname, '/i18n/'),
+            watch: true,
+         },
+         resolvers: [
+            { use: QueryResolver, options: ['lang'] },
+            AcceptLanguageResolver,
+         ],
+      }),
       ConfigModule.forRoot({ isGlobal: true }),
       MongooseModule.forRootAsync({
          useClass: MongoConfigService,

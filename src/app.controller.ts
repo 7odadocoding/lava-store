@@ -1,10 +1,20 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from './common/guards/auth.guard';
 
 @Controller('')
 export class AppController {
    @Get()
    @Render('index')
-   home() {
-      return { title: 'Home Page', body: 'Hello World!' };
+   @UseGuards(AuthGuard)
+   home(@Req() req) {
+      console.log(req.user);
+
+      return { message: 'Welcome again', name: req.user };
+   }
+
+   @Get('/login')
+   @Render('login')
+   login() {
+      return {};
    }
 }

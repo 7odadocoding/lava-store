@@ -17,6 +17,7 @@ export class UserRepository {
          firstname: user.firstname,
          lastname: user.lastname,
          email: user.email,
+         phone: user.phone,
          otp: user.otp,
       };
    }
@@ -30,6 +31,7 @@ export class UserRepository {
          firstname: user.firstname,
          lastname: user.lastname,
          email: user.email,
+         phone: user.phone,
          otp: user.otp,
       };
    }
@@ -42,6 +44,7 @@ export class UserRepository {
          firstname: user.firstname,
          lastname: user.lastname,
          email: user.email,
+         phone: user.phone,
          otp: user.otp,
       };
    }
@@ -61,6 +64,7 @@ export class UserRepository {
          firstname: user.firstname,
          lastname: user.lastname,
          email: user.email,
+         phone: user.phone,
          otp: user.otp,
       };
    }

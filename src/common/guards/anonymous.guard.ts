@@ -12,6 +12,8 @@ export class AnonymousGuard implements CanActivate {
       console.log('Token:', token);
 
       if (token) return true;
-      return false;
+
+      // TODO: if anonymous user has no token then create one and save it to cookies
+      // return false;
    }
 }

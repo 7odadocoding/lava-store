@@ -3,11 +3,13 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { VersioningType } from '@nestjs/common';
 import * as compression from 'compression';
+import * as cookieParser from 'cookie-parser';
 import { join } from 'path';
 
 async function bootstrap() {
    const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+   app.use(cookieParser());
    app.use(compression());
    app.enableVersioning({
       type: VersioningType.URI,
